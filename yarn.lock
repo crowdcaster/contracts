@@ -222,6 +222,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@openzeppelin/contracts@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-5.0.2.tgz#b1d03075e49290d06570b2fd42154d76c2a5d210"
+  integrity sha512-ytPc6eLGcHHnapAZ9S+5qsdomhjo6QBHTDRRBFfTxXIpsicMhVPouPgmUPebZZZGX7vt9USA+Z+0M0dSVtSUEA==
+
 "@scure/base@~1.1.4":
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.6.tgz#8ce5d304b436e4c84f896e0550c83e4d88cb917d"
@@ -1647,6 +1652,11 @@ slice-ansi@^5.0.0:
   dependencies:
     ansi-styles "^6.0.0"
     is-fullwidth-code-point "^4.0.0"
+
+solady@^0.0.200:
+  version "0.0.200"
+  resolved "https://registry.yarnpkg.com/solady/-/solady-0.0.200.tgz#5a76a8d2b90c0557d378cafc08e9ab816c5edbda"
+  integrity sha512-qNtx/SNPaUqhnivdkjxQmmQihmWBNSm1yuB5jRJum6uK+D9lzCeTi/TRH7DK/4P77qC8wWG/rF1ttQmvBzsjsA==
 
 solc-typed-ast@18.1.2:
   version "18.1.2"
