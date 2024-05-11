@@ -79,19 +79,6 @@ contract SimpleCampaign {
     emit CampaignCreated(maxId, goalAmount, duration, minimumDonation, beneficiary, token, name, description);
   }
 
-  // function createCampaign(bytes memory _data) public {
-  //     (uint256 goalAmount, uint256 deadline, uint256 minimumDonation, address beneficiary, address token, bytes memory name, bytes memory description) = abi.decode(_data, (uint256, uint256, uint256, address, address, bytes, bytes));
-
-  //     if (deadline <= block.timestamp) {
-  //         revert CampaignClosed(type(uint256).max);
-  //     }
-  //     maxId++;
-  //     campaigns[maxId] = CampaignData(
-  //         0, goalAmount, deadline, minimumDonation, true, beneficiary, token, name, description, new address[](0)
-  //     );
-  //     emit CampaignCreated(maxId, goalAmount, deadline, minimumDonation, beneficiary, token, name, description);
-  // }
-
   function contribute(uint256 id, uint256 amount) public payable {
     if (block.timestamp >= campaigns[id].deadline) {
       revert CampaignClosed(id);
@@ -105,7 +92,7 @@ contract SimpleCampaign {
 
     // require(contributions[id][msg.sender] + amount <= campaigns[id].goalAmount, "Contribution exceeds goal amount");
 
-    if (campaigns[id].token != address(0)) {
+    if (campaigns[id].token != NATIVE_TOKEN) {
       IERC20(campaigns[id].token).transferFrom(msg.sender, address(this), amount);
     } else {
       if (msg.value != amount) {
@@ -122,8 +109,11 @@ contract SimpleCampaign {
       campaigns[id].status = false;
       emit CampaignSuccess(id, campaigns[id].totalContributions);
 
-      // Transfer funds to beneficiary
-      payable(campaigns[id].beneficiary).transfer(campaigns[id].totalContributions);
+      if (campaigns[id].token != NATIVE_TOKEN) {
+        IERC20(campaigns[id].token).transfer(campaigns[id].beneficiary, campaigns[id].totalContributions);
+      } else {
+        payable(campaigns[id].beneficiary).transfer(campaigns[id].totalContributions);
+      }
     }
   }
 

@@ -1,34 +1,71 @@
-<img src="https://raw.githubusercontent.com/defi-wonderland/brand/v1.0.0/external/solidity-foundry-boilerplate-banner.png" alt="wonderland banner" align="center" />
-<br />
+# Crowdcaster Contracts
 
-<div align="center"><strong>Start your next Solidity project with Foundry in seconds</strong></div>
-<div align="center">A highly scalable foundation focused on DX and best practices</div>
+## Introduction
+Here we hold the set of crowcaster contracts, including:
+- CrowdcasterStrategy.sol, which is an early implementation of a kickstarter-style strategy for gitcoin allo v2;
+- simpleCampaign.sol, a functional standalone contract allowing for kickstarter-style donations of native and ERC-20 tokens. This includes permissionless donation and resolution of the crowdcaster campaign. 
 
-<br />
+## Sequence Diagram
 
-## Features
+The proposed structure of the CrowdcasterStrategy is as follows:
 
-<dl>
-  <dt>Sample contracts</dt>
-  <dd>Basic Greeter contract with an external interface.</dd>
+```mermaid
+sequenceDiagram
+    participant Alice
+    participant Bob
+    participant PoolManager
+    participant Allo
+    participant CrowdcasterStrategy
 
-  <dt>Foundry setup</dt>
-  <dd>Foundry configuration with multiple custom profiles and remappings.</dd>
+    PoolManager->>Allo: createPool with CrowdcasterStrategy
+    Allo-->>PoolManager: poolId
+    Bob ->> PoolManager: allocate()
+    PoolManager->>Allo: allocate()
+    Allo-->>CrowdcasterStrategy: allocate()
+    CrowdCasterStrategy ->> CrowdCasterStrategy: checkThreshold()
+    Bob ->> PoolManager: allocate()
+    PoolManager->>Allo: allocate()
+    Allo-->>CrowdcasterStrategy: allocate()
+    CrowdCasterStrategy ->> CrowdCasterStrategy: checkThreshold()
+```
 
-  <dt>Deployment scripts</dt>
-  <dd>Sample scripts to deploy contracts on both mainnet and testnet.</dd>
+Nevertheless, there are some restrictions on the gitcoin allo architecture; namely, increasePoolAmount does not return who increased the pool. For the sake of not using  so the architecture may need some further thought.
 
-  <dt>Sample Integration & Unit tests</dt>
-  <dd>Example tests showcasing mocking, assertions and configuration for mainnet forking. As well it includes everything needed in order to check code coverage.</dd>
+We have created an interim POC contract, which have three main functions:
 
-  <dt>Linter</dt>
-  <dd>Simple and fast solidity linting thanks to forge fmt.</dd>
-  <dd>Find missing natspec automatically.</dd>
+```sol
+function createCampaign(
+    uint256 goalAmount,
+    uint256 duration,
+    uint256 minimumDonation,
+    address beneficiary,
+    address token,
+    bytes calldata name,
+    bytes calldata description
+  ) public {}
+```
+This function allows for creating new campaigns, whether in an ERC20 token like $DEGEN :hat: or a native token.
 
-  <dt>Github workflows CI</dt>
-  <dd>Run all tests and see the coverage as you push your changes.</dd>
-  <dd>Export your Solidity interfaces and contracts as packages, and publish them to NPM.</dd>
-</dl>
+```sol
+  function contribute(uint256 id, uint256 amount) public payable {}
+```
+This function allows donating to a campaign. It also checks whether a campaign has reached the minimum threshold, at which point it executes the distribution of funds.
+
+```sol
+    if (campaigns[id].totalContributions >= campaigns[id].goalAmount) {
+      campaigns[id].status = false;
+      emit CampaignSuccess(id, campaigns[id].totalContributions);
+      [...]
+    }
+```
+
+If the execution is not successful, returning funds is possible via the following function:
+
+```sol
+  function returnFunds(uint256 id) public {}
+```
+## Testing
+There is testing already created for the SimpleCampaign, available using foundry.
 
 ## Setup
 
