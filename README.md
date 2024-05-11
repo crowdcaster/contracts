@@ -22,11 +22,11 @@ sequenceDiagram
     Bob ->> PoolManager: allocate()
     PoolManager->>Allo: allocate()
     Allo-->>CrowdcasterStrategy: allocate()
-    CrowdCasterStrategy ->> CrowdCasterStrategy: checkThreshold()
+    CrowdcasterStrategy ->> CrowdcasterStrategy: checkThreshold()
     Bob ->> PoolManager: allocate()
     PoolManager->>Allo: allocate()
     Allo-->>CrowdcasterStrategy: allocate()
-    CrowdCasterStrategy ->> CrowdCasterStrategy: checkThreshold()
+    CrowdcasterStrategy ->> CrowdcasterStrategy: checkThreshold()
 ```
 
 Nevertheless, there are some restrictions on the gitcoin allo architecture; namely, increasePoolAmount does not return who increased the pool. For the sake of not using  so the architecture may need some further thought.
