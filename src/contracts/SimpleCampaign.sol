@@ -55,23 +55,42 @@ contract SimpleCampaign {
 
   function createCampaign(
     uint256 goalAmount,
-    uint256 deadline,
+    uint256 duration,
     uint256 minimumDonation,
     address beneficiary,
     address token,
     bytes calldata name,
     bytes calldata description
   ) public {
-    if (deadline <= block.timestamp) {
-      revert CampaignClosed(type(uint256).max);
-    }
     maxId++;
     //solhint-disable-next-line
     campaigns[maxId] = CampaignData(
-      0, goalAmount, deadline, minimumDonation, true, beneficiary, token, name, description, new address[](0)
+      0,
+      goalAmount,
+      block.timestamp + duration,
+      minimumDonation,
+      true,
+      beneficiary,
+      token,
+      name,
+      description,
+      new address[](0)
     );
-    emit CampaignCreated(maxId, goalAmount, deadline, minimumDonation, beneficiary, token, name, description);
+    emit CampaignCreated(maxId, goalAmount, duration, minimumDonation, beneficiary, token, name, description);
   }
+
+  // function createCampaign(bytes memory _data) public {
+  //     (uint256 goalAmount, uint256 deadline, uint256 minimumDonation, address beneficiary, address token, bytes memory name, bytes memory description) = abi.decode(_data, (uint256, uint256, uint256, address, address, bytes, bytes));
+
+  //     if (deadline <= block.timestamp) {
+  //         revert CampaignClosed(type(uint256).max);
+  //     }
+  //     maxId++;
+  //     campaigns[maxId] = CampaignData(
+  //         0, goalAmount, deadline, minimumDonation, true, beneficiary, token, name, description, new address[](0)
+  //     );
+  //     emit CampaignCreated(maxId, goalAmount, deadline, minimumDonation, beneficiary, token, name, description);
+  // }
 
   function contribute(uint256 id, uint256 amount) public payable {
     if (block.timestamp >= campaigns[id].deadline) {
