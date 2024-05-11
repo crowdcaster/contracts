@@ -8,6 +8,7 @@
     "not-rely-on-time": "off",
     "no-inline-assembly": "off",
     "no-empty-blocks": "off",
+    "custom-errors":"warn",
     "private-vars-leading-underscore": ["warn", { "strict": false }],
     "ordering": "warn",
     "immutable-name-snakecase": "warn",
